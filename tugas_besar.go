@@ -18,6 +18,8 @@ var jumlahData int
 var idTerakhir int
 
 func main() {
+    isiDataDummy() 
+
     var pilihan int
     for {
         fmt.Println("\n===== MENU MONITORING POLUSI UDARA =====")
@@ -59,8 +61,45 @@ func main() {
         default:
             fmt.Println("Pilihan tidak valid.")
         }
+        fmt.Println()
     }
 }
+
+func isiDataDummy() {
+    dataDummy := []DataPolusi{
+        {lokasi: "Jakarta", tanggal: "01-01-2025", sumber: "Kendaraan", aqi: 180},
+        {lokasi: "Bandung", tanggal: "02-01-2025", sumber: "Pabrik", aqi: 210},
+        {lokasi: "Surabaya", tanggal: "03-01-2025", sumber: "Pembakaran", aqi: 95},
+        {lokasi: "Yogyakarta", tanggal: "04-01-2025", sumber: "Kendaraan", aqi: 60},
+        {lokasi: "Medan", tanggal: "05-01-2025", sumber: "Industri", aqi: 250},
+    }
+
+    for _, d := range dataDummy {
+        if jumlahData >= maxData {
+            fmt.Println("Kapasitas data penuh.")
+            break
+        }
+
+        idTerakhir++
+        d.id = idTerakhir
+
+        if d.aqi <= 50 {
+            d.kategori = "Baik"
+        } else if d.aqi <= 100 {
+            d.kategori = "Sedang"
+        } else if d.aqi <= 200 {
+            d.kategori = "Tidak Sehat"
+        } else {
+            d.kategori = "Berbahaya"
+        }
+
+        data[jumlahData] = d
+        jumlahData++
+    }
+
+    fmt.Println("Data dummy berhasil dimasukkan.")
+}
+
 
 func masukkanData() {
     if jumlahData >= maxData {
@@ -68,14 +107,19 @@ func masukkanData() {
         return
     }
 
-    fmt.Print("Masukkan lokasi: ")
-    fmt.Scan(&data[jumlahData].lokasi)
-    fmt.Print("Masukkan tanggal (dd-mm-yyyy): ")
-    fmt.Scan(&data[jumlahData].tanggal)
-    fmt.Print("Masukkan sumber polusi: ")
-    fmt.Scan(&data[jumlahData].sumber)
-    fmt.Print("Masukkan AQI: ")
-    fmt.Scan(&data[jumlahData].aqi)
+    fmt.Println("\n=== Masukkan Data Polusi ===")
+
+    fmt.Print("Lokasi            : ")
+    fmt.Scanln(&data[jumlahData].lokasi)
+
+    fmt.Print("Tanggal (dd-mm-yyyy): ")
+    fmt.Scanln(&data[jumlahData].tanggal)
+
+    fmt.Print("Sumber Polusi     : ")
+    fmt.Scanln(&data[jumlahData].sumber)
+
+    fmt.Print("AQI               : ")
+    fmt.Scanln(&data[jumlahData].aqi)
 
     aqi := data[jumlahData].aqi
     if aqi <= 50 {
@@ -91,6 +135,7 @@ func masukkanData() {
     idTerakhir++
     data[jumlahData].id = idTerakhir
     jumlahData++
+
     fmt.Println("Data berhasil ditambahkan.")
 }
 
@@ -108,19 +153,24 @@ func tampilkanData() {
 
 func menuCariData() {
     var pilih int
-    fmt.Println("\n=== Menu Pencarian Data Kota ===")
-    fmt.Println("1. Sequential Search")
-    fmt.Println("2. Binary Search (pastikan data sudah diurutkan berdasarkan nama kota)")
-    fmt.Print("Pilih metode pencarian: ")
-    fmt.Scan(&pilih)
+    fmt.Println("\n=== MENU PENCARIAN DATA KOTA ===")
+    fmt.Println("Pilih metode pencarian:")
+    fmt.Println("1. Sequential Search (pencarian berurutan)")
+    fmt.Println("2. Binary Search (pencarian biner - data akan diurutkan dulu berdasarkan nama kota)")
+    fmt.Print("Masukkan pilihan (1 atau 2): ")
+    fmt.Scanln(&pilih)
 
-    if pilih == 1 {
+    switch pilih {
+    case 1:
+        fmt.Println("Metode pencarian: Sequential Search")
         sequentialSearch()
-    } else if pilih == 2 {
+    case 2:
+        fmt.Println("Metode pencarian: Binary Search")
         urutkanNamaKotaAsc()
         binarySearch()
-    } else {
-        fmt.Println("Pilihan tidak valid.")
+    default:
+        fmt.Println("Pilihan tidak valid. Kembali ke menu utama.")
+        return 
     }
 }
 
@@ -243,7 +293,7 @@ func ubahData() {
 
     var id int
     fmt.Print("Masukkan ID data yang ingin diubah: ")
-    fmt.Scan(&id)
+    fmt.Scanln(&id)
 
     index := -1
     for i := 0; i < jumlahData; i++ {
@@ -261,21 +311,25 @@ func ubahData() {
     fmt.Printf("Data lama: Lokasi: %s, Tanggal: %s, Sumber: %s, AQI: %d\n",
         data[index].lokasi, data[index].tanggal, data[index].sumber, data[index].aqi)
 
+ 
     fmt.Print("Masukkan lokasi baru: ")
-    fmt.Scan(&data[index].lokasi)
-    fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
-    fmt.Scan(&data[index].tanggal)
-    fmt.Print("Masukkan sumber baru: ")
-    fmt.Scan(&data[index].sumber)
-    fmt.Print("Masukkan AQI baru: ")
-    fmt.Scan(&data[index].aqi)
+    fmt.Scanln(&data[index].lokasi)
 
-    aqi := data[index].aqi
-    if aqi <= 50 {
+    fmt.Print("Masukkan tanggal baru (dd-mm-yyyy): ")
+    fmt.Scanln(&data[index].tanggal)
+
+    fmt.Print("Masukkan sumber baru: ")
+    fmt.Scanln(&data[index].sumber)
+
+    fmt.Print("Masukkan AQI baru: ")
+    fmt.Scanln(&data[index].aqi)
+
+    
+    if data[index].aqi <= 50 {
         data[index].kategori = "Baik"
-    } else if aqi <= 100 {
+    } else if data[index].aqi <= 100 {
         data[index].kategori = "Sedang"
-    } else if aqi <= 200 {
+    } else if data[index].aqi <= 200 {
         data[index].kategori = "Tidak Sehat"
     } else {
         data[index].kategori = "Berbahaya"
@@ -287,12 +341,16 @@ func ubahData() {
 func hapusData() {
     if jumlahData == 0 {
         fmt.Println("Belum ada data.")
+        fmt.Print("Tekan ENTER untuk kembali ke menu...")
+        var dummy string
+        fmt.Scanln(&dummy)
         return
     }
 
     var id int
     fmt.Print("Masukkan ID data yang ingin dihapus: ")
     fmt.Scan(&id)
+    fmt.Scanln() 
 
     index := -1
     for i := 0; i < jumlahData; i++ {
@@ -304,6 +362,9 @@ func hapusData() {
 
     if index == -1 {
         fmt.Println("Data dengan ID tersebut tidak ditemukan.")
+        fmt.Print("Tekan ENTER untuk kembali ke menu...")
+        var dummy string
+        fmt.Scanln(&dummy)
         return
     }
 
@@ -313,4 +374,7 @@ func hapusData() {
     jumlahData--
 
     fmt.Println("Data berhasil dihapus.")
+    fmt.Print("Tekan ENTER untuk kembali ke menu...")
+    var dummy string
+    fmt.Scanln(&dummy)
 }
